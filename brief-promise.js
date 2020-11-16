@@ -30,25 +30,23 @@
  * 
  * 
  * @param {Function} executor the asyncronous code to be performed
- * @param {integer} milliseconds to wait before rejecting the Promise
+ * @param {integer} milliseconds time to wait before rejecting the Promise
  * 
  * @example
  *
  *    const BriefPromise = require("path/to/brief-promise.js");
- * 
+ *    
  *    const executor = (resolve, reject) => {
- *      // asyncronous code resulting in a call to "resolve" or "reject"
- *      // ...
+ *      // some task to be executed asynchronously resulting in a call to "resolve" or "reject"
  *      setTimeout(resolve, 2000, 'value encountered after 2 seconds');
  *    };
  *    
  *    new BriefPromise(executor)
- *      .timeout(5000) // five seconds to complete the task
+ *      .timeout(5000) // five seconds to complete the executor (a call to "resolve" or "reject")
  *      .then(
  *        (value) => {
- *          console.log(`Successful Response: ${value}`);
- *          // do some new task ...
- *          // ... and return a new value
+ *          console.log(`Successful Response:\n  ${value}`);
+ *          // do another task and return some new value
  *          const newValue = new Promise(
  *            (resolve) => {
  *              setTimeout(resolve, 2500, 'some new value after 2.5 seconds');
@@ -57,11 +55,11 @@
  *          return newValue;
  *        },
  *        null, // second parameter of "then" is reserved by the Promise class (a shortcut to "catch", if not null)
- *        3000  // sets a timeout of 3 seconds for this "then" statement
+ *        3000  // sets a timeout of 3 seconds to complete this "then" statement
  *      )
  *      .then(
  *        (value) => {
- *          console.log(`New Successful Response: ${value}`);
+ *          console.log(`New Successful Response:\n  ${value}`);
  *        }
  *      )
  *      .catch(
@@ -91,21 +89,23 @@ class BriefPromise extends Promise {
 
   constructor(executor, milliseconds = null) {
     let cancel;
-    super((resolve, reject) => {
-      cancel = reject;
-      new Promise(executor)
-        .then(
-          (onFulfilled) => { resolve(onFulfilled); },
-          (onRejected) => { reject(onRejected); }
-        )
-        .finally(
-          () => {
-            if (this.timeoutId) {
-              clearTimeout(this.timeoutId);
+    super(
+      (resolve, reject) => {
+        cancel = reject;
+        new Promise(executor)
+          .then(
+            (onFulfilled) => { resolve(onFulfilled); },
+            (onRejected) => { reject(onRejected); }
+          )
+          .finally(
+            () => {
+              if (this.timeoutId) {
+                clearTimeout(this.timeoutId);
+              }
             }
-          }
-        );
-    });
+          );
+      }
+    );
     
     Object.defineProperty(this, 'timeoutId', {enumerable: false, writable: true, value: null});
     Object.defineProperty(this, 'cancel', {enumerable: false, value: cancel});
@@ -200,16 +200,13 @@ class BriefPromise extends Promise {
     } else {
       any = (promises) => {
         return new Promise((resolve, reject) => {
-          if (!Array.isArray(promises)) {
-            promises = [promises];
-          }
           let rejectCounter = promises.length;
           promises.forEach((p) => {
             p.then(
               (value) => {
                 resolve(value);
               },
-              (_) => {
+              () => {
                 if (--rejectCounter === 0) {
                   reject(new Error('No promises were fulfilled.'));
                 }
@@ -219,7 +216,6 @@ class BriefPromise extends Promise {
         });
       }
     }
-
     return BriefPromise.wrap(any(promises), milliseconds);
   };
 
@@ -236,8 +232,8 @@ class BriefPromise extends Promise {
 
   /**
    * Wraps a value of any type into a BriefPromise object. It's useful if you
-   * need to add a timeout to an existing promise or a function that returns
-   * some value.
+   * need to add a timeout to an existing promise or to a function that will
+   * return some value.
    * 
    * @param {any} object 
    * @param {Number} milliseconds 
@@ -266,7 +262,7 @@ class BriefPromise extends Promise {
   }
 }
 
-// for NodeJS
+// used by NodeJS
 if ((typeof module !== 'undefined') && module && module.exports) {
   module.exports = BriefPromise;
 }
