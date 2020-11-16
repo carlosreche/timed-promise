@@ -58,7 +58,7 @@ let promises = [
   )
 ];
 
-// change the method below between "allSettled", "all", "any" and "race" to spot the difference
+// change the method below between "allSettled", "all", "any" and "race"
 BriefPromise.any(promises, 5000)
   .then(
     (value) => {
