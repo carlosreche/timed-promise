@@ -183,7 +183,7 @@ class BriefPromise extends Promise {
    * @param {Number} milliseconds 
    * @returns {BriefPromise}
    */
-  static race = async (promises, milliseconds) => {
+  static race = (promises, milliseconds) => {
     return BriefPromise.wrap(Promise.race(promises), milliseconds);
   };
 
