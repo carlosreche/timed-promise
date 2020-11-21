@@ -1,4 +1,4 @@
-const BriefPromise = require("./brief-promise.js");
+import BriefPromise from './brief-promise.mjs';
 
 
 //-----  Testing BriefPromise object  ----------------------------------------//

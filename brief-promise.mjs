@@ -29,12 +29,13 @@
  * skipping this step and hopefuly making the script more efficient.
  * 
  * @author Carlos Henrique Reche
+ * @url https://github.com/carlosreche/brief-promise
  * 
  * 
  * @param {Function} executor the asyncronous code to be performed
  * @param {integer} milliseconds time to wait before rejecting the Promise
  */
-class BriefPromise extends Promise {
+export default class BriefPromise extends Promise {
 
   static TimeoutError = class PromiseTimeoutError extends Error {
     constructor(message) {
@@ -153,7 +154,7 @@ class BriefPromise extends Promise {
   static any = (promises, milliseconds) => {
     let any;
     if (typeof Promise.any === 'function') {
-      any = Promise.any;
+      any = Promise.any.bind(Promise);
     } else {
       any = (promises) => {
         return new Promise((resolve, reject) => {
@@ -217,9 +218,4 @@ class BriefPromise extends Promise {
     };
     return new BriefPromise(executor, milliseconds);
   }
-}
-
-// used by NodeJS
-if ((typeof module !== 'undefined') && module && module.exports) {
-  module.exports = BriefPromise;
 }
