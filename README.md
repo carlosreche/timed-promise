@@ -60,7 +60,7 @@ new BriefPromise(executor)
 ```
 
 
-Testing the static methods:
+Testing BriefPromise static methods:
 
 ```js
 import BriefPromise from './brief-promise.mjs';
@@ -90,9 +90,9 @@ BriefPromise.any(promises, 5000)
   .catch(
     (e) => {
       if (e instanceof BriefPromise.TimeoutError) {
-        console.log(`Timed out error: ${e.message}`);
+        console.error(`Timed out error: ${e.message}`);
       } else {
-        console.log(`Failed: ${e}`);
+        console.error(`Failed: ${e}`);
       }
     }
   );
