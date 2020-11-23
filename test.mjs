@@ -5,25 +5,34 @@ import BriefPromise from './brief-promise.mjs';
 /**/
 
 const executor = (resolve, reject) => {
-  // some task to be executed asynchronously resulting in a call to "resolve" or "reject"
-  setTimeout(resolve, 2000, 'value encountered after 2 seconds');
+  // Here goes the task to be executed asynchronously resulting
+  // in a call to "resolve" or "reject" (like a regular Promise).
+
+  // In this case, the Promise will be resolved after 3 seconds
+  // returning the string below as the value encountered
+  setTimeout(resolve, 3000, 'value encountered after 3 seconds');
 };
 
+
 new BriefPromise(executor)
-  .timeout(5000) // five seconds to complete the executor (a call to "resolve" or "reject")
+  .timeout(2000) // sets 2 seconds to complete the executor
+                 // (a call to "resolve" or "reject")
   .then(
     (value) => {
       console.log(`Successful Response:\n  ${value}`);
-      // do another task and return some new value
-      const newValue = new Promise(
-        (resolve) => {
-          setTimeout(resolve, 2500, 'some new value after 2.5 seconds');
-        }
-      );
+
+      // do another task and return some new value after 2.5 seconds
+      const newValue = new Promise((resolve) => {
+        setTimeout(resolve, 2500, 'some new value after 2.5 seconds');
+      });
       return newValue;
     },
-    null, // second parameter of "then" is reserved by the Promise class (a shortcut to "catch", if not null)
-    3000  // sets a timeout of 3 seconds to complete this "then" statement
+
+    null, // the second parameter of "then" is reserved by the Promise standard
+          // (a shortcut to "catch", if not null)
+
+    3000  // the third parameter sets a timeout to complete this "then" statement
+          // (in this case, 3 seconds)
   )
   .then(
     (value) => {
@@ -58,7 +67,8 @@ let promises = [
   )
 ];
 
-// change the method below between "allSettled", "all", "any" and "race"
+// notice the difference by changing the method below
+// between "allSettled", "all", "any" and "race"
 BriefPromise.any(promises, 5000)
   .then(
     (value) => {
@@ -69,9 +79,9 @@ BriefPromise.any(promises, 5000)
   .catch(
     (e) => {
       if (e instanceof BriefPromise.TimeoutError) {
-        console.log(`Timed out error: ${e.message}`);
+        console.error(`Timed out error: ${e.message}`);
       } else {
-        console.log(`Failed: ${e}`);
+        console.error(`Failed: ${e}`);
       }
     }
   );
