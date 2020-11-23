@@ -1,9 +1,10 @@
 # Class BriefPromise
+
 Creates a Promise that will be rejected if it's not resolved in a certain amount of time. The timeout is immediately canceled when the Promise is settled, then long timeouts won't keep the script running unnecessarily.
 
 Also lets create individual timeouts for each subsequent calls to **_then_** method of the **Promise object**, and implements the static methods of the **Promise class** as well (**_all_**, **_allSettled_**, **_any_** and **_race_**) to work with timeouts.
 
-This alternative to create Promises with timeouts doesn't use the commonly seen implementations using Promise.race() to cancel the unresolved Promise, skipping this step and hopefuly making the script more efficient.
+This alternative to create Promises with timeouts doesn't use the commonly seen implementations with _Promise.race()_ to cancel the unresolved Promise, skipping this step and hopefuly making the script more efficient.
 
 ## Examples
 
