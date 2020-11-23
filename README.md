@@ -8,8 +8,9 @@ This alternative to create Promises with timeouts doesn't use the commonly seen 
 
 ## Examples
 
-```js
+### Working with a **BriefPromise** object
 
+```js
 import BriefPromise from './brief-promise.mjs';
 
 
@@ -60,8 +61,7 @@ new BriefPromise(executor)
   );
 ```
 
-
-Testing BriefPromise static methods:
+### Static methods of the **BriefPromise** class
 
 ```js
 import BriefPromise from './brief-promise.mjs';
@@ -89,11 +89,42 @@ BriefPromise.any(promises, 5000)
     }
   )
   .catch(
-    (e) => {
-      if (e instanceof BriefPromise.TimeoutError) {
-        console.error(`Timed out error: ${e.message}`);
+    (error) => {
+      if (error instanceof BriefPromise.TimeoutError) {
+        console.error(`Timed out error: ${error.message}`);
       } else {
-        console.error(`Failed: ${e}`);
+        console.error(`Failed: ${error}`);
+      }
+    }
+  );
+
+```
+
+### Wrapping an existing value into a **BriefPromise** object
+
+Finally, you can wrap a value of any type into a BriefPromise object. It's useful if you need to add a timeout to an existing promise or to a function that will return some value.
+
+```js
+import BriefPromise from './brief-promise.mjs';
+
+
+let regularPromise = new Promise(
+  (resolve, reject) => setTimeout(resolve, 3000, 'resolved after 3 seconds')
+);
+
+BriefPromise.wrap(regularPromise, 2000)
+  .then(
+    (value) => {
+      console.log(`Successful Response:`);
+      console.log(value);
+    }
+  )
+  .catch(
+    (error) => {
+      if (error instanceof BriefPromise.TimeoutError) {
+        console.error(`Timed out error: ${error.message}`);
+      } else {
+        console.error(`Failed: ${error}`);
       }
     }
   );
