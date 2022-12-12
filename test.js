@@ -1,7 +1,7 @@
-import BriefPromise from './brief-promise.mjs';
+import TimedPromise from './timed-promise.js';
 
 
-//-----  Testing BriefPromise object  ----------------------------------------//
+//-----  Testing TimedPromise object  ----------------------------------------//
 /**/
 
 const executor = (resolve, reject) => {
@@ -14,7 +14,7 @@ const executor = (resolve, reject) => {
 };
 
 
-new BriefPromise(executor)
+new TimedPromise(executor)
   .timeout(2000) // sets 2 seconds to complete the executor
                  // (a call to "resolve" or "reject")
   .then(
@@ -42,7 +42,7 @@ new BriefPromise(executor)
   .catch(
     (error) => {
       // checking if it's a timeout error
-      if (error instanceof BriefPromise.TimeoutError) {
+      if (error instanceof TimedPromise.TimeoutError) {
         console.error(`The Promise timed out before finishing the task. Details:\n  ${error}`);
       } else {
         console.error(error); // other errors
@@ -69,7 +69,7 @@ let promises = [
 
 // notice the difference by changing the method below
 // between "allSettled", "all", "any" and "race"
-BriefPromise.any(promises, 5000)
+TimedPromise.any(promises, 5000)
   .then(
     (value) => {
       console.log(`Successful Response:`);
@@ -78,7 +78,7 @@ BriefPromise.any(promises, 5000)
   )
   .catch(
     (e) => {
-      if (e instanceof BriefPromise.TimeoutError) {
+      if (e instanceof TimedPromise.TimeoutError) {
         console.error(`Timed out error: ${e.message}`);
       } else {
         console.error(`Failed: ${e}`);

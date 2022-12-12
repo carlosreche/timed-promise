@@ -1,4 +1,4 @@
-# Class BriefPromise
+# Class TimedPromise
 
 Creates a Promise that will be rejected if it's not resolved in a certain amount of time. The timeout is immediately canceled when the Promise is settled, then long timeouts won't keep the script running unnecessarily.
 
@@ -8,10 +8,10 @@ This alternative to create Promises with timeouts doesn't use the commonly seen 
 
 ## Examples
 
-### Working with a **BriefPromise** object
+### Working with a **TimedPromise** object
 
 ```js
-import BriefPromise from './brief-promise.mjs';
+import TimedPromise from './timed-promise.mjs';
 
 
 const executor = (resolve, reject) => {
@@ -24,7 +24,7 @@ const executor = (resolve, reject) => {
 };
 
 
-new BriefPromise(executor)
+new TimedPromise(executor)
   .timeout(2000) // sets 2 seconds to complete the executor
                  // (a call to "resolve" or "reject")
   .then(
@@ -52,7 +52,7 @@ new BriefPromise(executor)
   .catch(
     (error) => {
       // checking if it's a timeout error
-      if (error instanceof BriefPromise.TimeoutError) {
+      if (error instanceof TimedPromise.TimeoutError) {
         console.error(`The Promise timed out before finishing the task. Details:\n  ${error}`);
       } else {
         console.error(error); // other errors
@@ -61,10 +61,10 @@ new BriefPromise(executor)
   );
 ```
 
-### Static methods of the **BriefPromise** class
+### Static methods of the **TimedPromise** class
 
 ```js
-import BriefPromise from './brief-promise.mjs';
+import TimedPromise from './timed-promise.mjs';
 
 
 let promises = [
@@ -81,7 +81,7 @@ let promises = [
 
 // notice the difference by changing the method below
 // between "allSettled", "all", "any" and "race"
-BriefPromise.any(promises, 5000)
+TimedPromise.any(promises, 5000)
   .then(
     (value) => {
       console.log(`Successful Response:`);
@@ -90,7 +90,7 @@ BriefPromise.any(promises, 5000)
   )
   .catch(
     (error) => {
-      if (error instanceof BriefPromise.TimeoutError) {
+      if (error instanceof TimedPromise.TimeoutError) {
         console.error(`Timed out error: ${error.message}`);
       } else {
         console.error(`Failed: ${error}`);
@@ -100,19 +100,19 @@ BriefPromise.any(promises, 5000)
 
 ```
 
-### Wrapping an existing value into a **BriefPromise** object
+### Wrapping an existing value into a **TimedPromise** object
 
-Finally, you can wrap a value of any type into a BriefPromise object. It's useful if you need to add a timeout to an existing promise or to a function that will return some value.
+Finally, you can wrap a value of any type into a TimedPromise object. It's useful if you need to add a timeout to an existing promise or to a function that will return some value.
 
 ```js
-import BriefPromise from './brief-promise.mjs';
+import TimedPromise from './timed-promise.mjs';
 
 
 let regularPromise = new Promise(
   (resolve, reject) => setTimeout(resolve, 3000, 'resolved after 3 seconds')
 );
 
-BriefPromise.wrap(regularPromise, 2000)
+TimedPromise.wrap(regularPromise, 2000)
   .then(
     (value) => {
       console.log(`Successful Response:`);
@@ -121,7 +121,7 @@ BriefPromise.wrap(regularPromise, 2000)
   )
   .catch(
     (error) => {
-      if (error instanceof BriefPromise.TimeoutError) {
+      if (error instanceof TimedPromise.TimeoutError) {
         console.error(`Timed out error: ${error.message}`);
       } else {
         console.error(`Failed: ${error}`);
