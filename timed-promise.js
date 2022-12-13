@@ -28,7 +28,7 @@
  * skipping this step and hopefuly making the script more efficient.
  * 
  * @author Carlos Henrique Reche
- * @url https://github.com/carlosreche/brief-promise
+ * @url https://github.com/carlosreche/timed-promise
  * 
  * 
  * @param {function} executor the asyncronous code to be performed
@@ -182,7 +182,7 @@ export default class TimedPromise extends Promise {
   }
 
   /**
-   * Wraps a value of any type into a BriefPromise object. It's useful if you
+   * Wraps a value of any type into a Timedpromise object. It's useful if you
    * need to add a timeout to an existing promise or to a function that will
    * return some value.
    * 
